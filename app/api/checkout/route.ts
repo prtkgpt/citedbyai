@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
             product_data: {
               name: `citedbyai.lol listing: ${parsed.hostname}`,
               description: "Adds to your total bid on the leaderboard.",
+              tax_code: "txcd_10000000",
             },
           },
           quantity: 1,
