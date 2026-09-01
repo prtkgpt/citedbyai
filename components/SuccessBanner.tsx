@@ -15,8 +15,9 @@ export default function SuccessBanner() {
     window.history.replaceState({}, "", "/");
     // The webhook usually lands within seconds of the redirect.
     // Refresh a few times so the new bid appears without manual reloads.
-    const timers = [1500, 4000, 8000, 15000].map((ms)
-      => setTimeout(() => router.refresh(), ms));
+    const timers = [1500, 4000, 8000, 15000].map((ms) =>
+      setTimeout(() => router.refresh(), ms)
+    );
     const hide = setTimeout(() => setShow(false), 20000);
     return () => { timers.forEach(clearTimeout); clearTimeout(hide); };
   }, [router]);
