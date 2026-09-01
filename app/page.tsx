@@ -1,6 +1,7 @@
 import { getListings } from "@/lib/supabase";
 import BidForm from "@/components/BidForm";
 import Board from "@/components/Board";
+import CrawlerLog from "@/components/CrawlerLog";
 
 export const revalidate = 60;
 
@@ -73,6 +74,8 @@ export default async function Home() {
         </section>
 
         <Board listings={listings} />
+
+        <CrawlerLog />
 
         <footer className="site">
           We make this page maximally readable by AI crawlers. We can&apos;t
