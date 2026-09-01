@@ -2,6 +2,7 @@ import { getListings } from "@/lib/supabase";
 import BidForm from "@/components/BidForm";
 import Board from "@/components/Board";
 import CrawlerLog from "@/components/CrawlerLog";
+import SuccessBanner from "@/components/SuccessBanner";
 
 export const revalidate = 60;
 
@@ -35,6 +36,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="wrap">
+        <SuccessBanner />
         <header className="site">
           <a className="logo" href="/">citedbyai<span>.lol</span></a>
         </header>

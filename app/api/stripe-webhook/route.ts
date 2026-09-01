@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase";
 
@@ -31,6 +32,8 @@ export async function POST(req: NextRequest) {
         console.error("apply_bid failed", error);
         return NextResponse.json({ error: "db error" }, { status: 500 });
       }
+      revalidatePath("/");
+      revalidatePath("/llms.txt");
     }
   }
 
