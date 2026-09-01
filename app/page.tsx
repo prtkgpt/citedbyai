@@ -54,7 +54,7 @@ export default async function Home() {
             Take #1 for <b>${takePrice.toLocaleString()}</b> · spots start at $5
           </div>
 
-          <BidForm />
+          <BidForm totals={listings.map((l) => ({ url: l.url, total_cents: l.total_cents }))} />
 
           <div className="answer-card">
             <div className="prompt">what an AI answer with citations looks like</div>
@@ -81,7 +81,8 @@ export default async function Home() {
           We make this page maximally readable by AI crawlers. We can&apos;t
           guarantee any model will cite you. All bids final. Illegal,
           deceptive, or NSFW listings removed without refund. ·{" "}
-          <a href="/llms.txt">llms.txt</a>
+          <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> ·{" "}
+          <a href="/rules">Rules</a> · <a href="/llms.txt">llms.txt</a>
         </footer>
       </div>
     </>
