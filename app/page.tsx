@@ -1,4 +1,4 @@
-import { getListings } from "@/lib/supabase";
+import { getListings, getLastCrawlerVisit } from "@/lib/supabase";
 import BidForm from "@/components/BidForm";
 import Board from "@/components/Board";
 import CrawlerLog from "@/components/CrawlerLog";
@@ -8,7 +8,19 @@ export const revalidate = 60;
 
 export default async function Home() {
   const listings = await getListings();
+  const lastVisit = await getLastCrawlerVisit();
   const top3 = listings.slice(0, 3);
+  const totalUsd = Math.round(listings.reduce((a, l) => a + l.total_cents, 0) / 100);
+  const totalBids = listings.reduce((a, l) => a + l.bid_count, 0);
+  const recent = [...listings]
+    .sort((a, b) => +new Date(b.last_bid_at) - +new Date(a.last_bid_at))
+    .slice(0, 5);
+  const agoStr = (iso: string) => {
+    const sec = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 3600) return `${Math.max(1, Math.floor(sec / 60))}m ago`;
+    if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`;
+    return `${Math.floor(sec / 86400)}d ago`;
+  };
   const takePrice = listings.length
     ? Math.ceil(listings[0].total_cents / 100) + 1
     : 5;
@@ -43,7 +55,9 @@ export default async function Home() {
 
         <section className="hero">
           <div className="pill">
-            <span className="dot" />crawled by GPTBot · ClaudeBot · PerplexityBot
+            <span className="dot" />
+            ${totalUsd.toLocaleString()} on the board · {totalBids} bid{totalBids === 1 ? "" : "s"} ·{" "}
+            {lastVisit ? `${lastVisit.bot} seen ${agoStr(lastVisit.visited_at)}` : "awaiting first AI crawler"}
           </div>
           <h1>
             The leaderboard <span className="hl">AI models read</span>
@@ -74,6 +88,20 @@ export default async function Home() {
             </span>
           </div>
         </section>
+
+        {recent.length > 0 && (
+          <section className="activity">
+            <h2>Latest activity</h2>
+            <ul>
+              {recent.map((l) => (
+                <li key={l.id}>
+                  <a href={`/site/${l.domain}`}>{l.domain}</a>
+                  <span>${(l.total_cents / 100).toLocaleString()} total · {agoStr(l.last_bid_at)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <Board listings={listings} />
 

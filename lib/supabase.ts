@@ -10,7 +10,9 @@ export type Listing = {
   last_bid_at: string;
 };
 
-// Read-only client for public pages.
+export const PUBLIC_COLS =
+  "id, url, domain, description, total_cents, bid_count, last_bid_at";
+
 export function supabasePublic() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,7 +20,6 @@ export function supabasePublic() {
   );
 }
 
-// Service-role client. Server only. Used by the Stripe webhook.
 export function supabaseAdmin() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,8 +30,17 @@ export function supabaseAdmin() {
 export async function getListings(): Promise<Listing[]> {
   const { data } = await supabasePublic()
     .from("listings")
-    .select("*")
+    .select(PUBLIC_COLS)
     .order("total_cents", { ascending: false })
     .limit(200);
-  return data ?? [];
+  return (data as Listing[] | null) ?? [];
+}
+
+export async function getLastCrawlerVisit(): Promise<{ bot: string; visited_at: string } | null> {
+  const { data } = await supabasePublic()
+    .from("crawler_visits")
+    .select("bot, visited_at")
+    .order("visited_at", { ascending: false })
+    .limit(1);
+  return data?.[0] ?? null;
 }

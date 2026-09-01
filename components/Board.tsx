@@ -39,6 +39,7 @@ export default function Board({ listings }: { listings: Listing[] }) {
                   {l.domain}
                 </a>
                 {l.description && <p>{l.description}</p>}
+                <a className="stats-link" href={`/site/${l.domain}`}>stats + badge →</a>
               </span>
               <span className="amount">${(l.total_cents / 100).toLocaleString()}</span>
             </li>
